@@ -214,19 +214,36 @@ function _txTimelineHTML(list, dateStr, withMemo){
 }
 
 function _txOpenWindow(titleText, dateStr, rows, note){
-  var w=window.open('','_blank','width=500,height=860');
+  var w=window.open('','_blank','width=520,height=900');
   w.document.write('<html><head><meta charset="UTF-8"><title>'+titleText+'</title>'
-    +'<style>body{font-family:sans-serif;padding:24px;max-width:460px;margin:0 auto;background:white}@media print{body{padding:16px}}</style></head><body>'
+    +'<style>'
+    +'body{font-family:sans-serif;padding:24px;max-width:460px;margin:0 auto;background:white}'
+    +'@media print{.no-print{display:none}body{padding:16px}}'
+    +'.save-btns{display:flex;gap:8px;justify-content:center;margin-bottom:18px}'
+    +'.btn-print{padding:9px 20px;background:#2D5016;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:sans-serif}'
+    +'.btn-pdf{padding:9px 20px;background:#1565C0;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:sans-serif}'
+    +'</style></head><body>'
+    +'<div class="no-print save-btns">'
+    +'<button class="btn-print" onclick="window.print()">🖨️ 인쇄</button>'
+    +'<button class="btn-pdf" onclick="savePDF()">💾 PDF 파일 저장</button>'
+    +'</div>'
     +'<div style="text-align:center;margin-bottom:22px">'
     +'<div style="font-size:28px">🍁</div>'
     +'<h2 style="font-size:17px;margin:6px 0;color:#2D5016;font-family:serif">'+titleText+'</h2>'
     +(dateStr?'<div style="display:inline-block;background:#1565C0;color:white;font-size:13px;font-weight:700;padding:4px 14px;border-radius:20px;margin:4px 0">'+dateStr+'</div><br>':'')
     +'<span style="font-size:11px;color:#aaa">슬기로운 캐나다 생활</span></div>'
-    +'<div>'+rows+'</div>'
+    +'<div id="txContent">'+rows+'</div>'
     +'<div style="margin-top:20px;padding-top:14px;border-top:1px solid #eee;text-align:center;font-size:10px;color:#bbb">'+note+'</div>'
+    +'<script>'
+    +'function savePDF(){'
+    +'  var opt={margin:10,filename:"밴프_여행_일정표.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}};'
+    +'  var el=document.getElementById("txContent");'
+    +'  if(window.html2pdf){html2pdf().set(opt).from(document.body).save();}'
+    +'  else{window.print();}' // fallback
+    +'}'
+    +'<\/script>'
     +'</body></html>');
   w.document.close();
-  setTimeout(function(){w.print();},600);
 }
 
 function txSaveImg(){
@@ -244,11 +261,11 @@ function txPlanImg(){
 function txPlanCSV(){
   var date=(document.getElementById('txPD')||{}).value||'';
   var BOM='\uFEFF';
-  var H=['순서','지도번호','날짜','시간','명소','소요시간','입장료','주차','메모'];
+  var H=['순서','날짜','시간','지도번호','명소','소요시간','입장료','주차','메모'];
   var rows=txMyList.map(function(s,i){
     var time=((document.getElementById('txPT'+s.num)||{}).value)||'';
     var memo=(((document.getElementById('txPM'+s.num)||{}).value)||'').replace(/,/g,'，').replace(/\n/g,' ');
-    return [i+1,s.num,date,time,'"'+s.title+'"','"'+s.info[2][1]+'"','"'+s.info[0][1]+'"','"'+s.info[1][1]+'"','"'+memo+'"'].join(',');
+    return [i+1,date,time,s.num,'"'+s.title+'"','"'+s.info[2][1]+'"','"'+s.info[0][1]+'"','"'+s.info[1][1]+'"','"'+memo+'"'].join(',');
   });
   var a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([BOM+H.join(',')+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'}));

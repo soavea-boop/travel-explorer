@@ -264,6 +264,15 @@ function txScanAndInit() {
     var data = JSON.parse(el.textContent || el.innerHTML);
     el.setAttribute('data-loaded', '1');
     txInit(data);
+    /* tx-app을 글 본문 위치로 이동 */
+    var app = document.getElementById('tx-app');
+    if (app) {
+      /* 글 본문 컨테이너 찾기 - 티스토리 북클럽 스킨 */
+      var target = el.parentNode;
+      if (target) {
+        target.insertBefore(app, el);
+      }
+    }
   } catch(e) {
     console.warn('tx-json-data 파싱 오류:', e);
   }

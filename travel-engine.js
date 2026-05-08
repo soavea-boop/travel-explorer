@@ -171,16 +171,18 @@ function txOpenPlan(){
     '<div class="pdate-hdr"><span>📅 방문 날짜</span><input type="date" id="txPD"></div>'
     +txMyList.map(function(s){
       var nc=s.cat==='food'?'food':s.cat==='ski'?'ski':'';
-      return '<div class="pitem"><div class="pih"><div class="piN '+nc+'">'+s.num+'</div><span class="piNm">'+s.emoji+' '+s.title+'</span></div>'
+      return '<div class="pitem">'
+        +'<div class="pih"><div class="piN '+nc+'">'+s.num+'</div><span class="piNm">'+s.emoji+' '+s.title+'</span></div>'
         +'<div class="pflds">'
-        +'<div class="pfld"><label>⏰ 방문 시간</label><input type="time" id="txPT'+s.num+'"></div>'
-        +'<div class="pfld ro"><label>🗺️ 지도 번호</label><input type="text" value="'+s.num+'" readonly></div>'
-        +'<div class="pfld ro"><label>📍 명소명</label><input type="text" value="'+s.title+'" readonly></div>'
-        +'<div class="pfld ro"><label>⏱ 소요시간</label><input type="text" value="'+s.info[2][1]+'" readonly></div>'
-        +'<div class="pfld ro"><label>🎫 입장료</label><input type="text" value="'+s.info[0][1]+'" readonly></div>'
-        +'<div class="pfld ro"><label>🅿️ 주차</label><input type="text" value="'+s.info[1][1]+'" readonly></div>'
-        +'<div class="pfld full"><label>📝 메모</label><textarea id="txPM'+s.num+'" placeholder="준비물, 예약, 동행자 등"></textarea></div>'
-        +'</div></div>';
+          +'<div class="pfld"><label>⏰ 방문 시간</label><input type="time" id="txPT'+s.num+'"></div>'
+          +'<div class="pfld ro"><label>🗺️ 지도 번호</label><input type="text" value="'+s.num+'" readonly></div>'
+          +'<div class="pfld full ro"><label>📍 명소명</label><input type="text" value="'+s.title+'" readonly></div>'
+          +'<div class="pfld ro"><label>⏱ 소요시간</label><input type="text" value="'+s.info[2][1]+'" readonly></div>'
+          +'<div class="pfld ro"><label>🎫 입장료</label><input type="text" value="'+s.info[0][1]+'" readonly></div>'
+          +'<div class="pfld full ro"><label>🅿️ 주차</label><input type="text" value="'+s.info[1][1]+'" readonly></div>'
+          +'<div class="pfld full"><label>📝 메모 (준비물, 예약, 동행자 등)</label><textarea id="txPM'+s.num+'" placeholder="예: 카누 예약 필요 / 선크림 / 가족 4명"></textarea></div>'
+        +'</div>'
+      +'</div>';
     }).join('');
   document.getElementById('txPlan').classList.add('open');
   document.body.style.overflow='hidden';
@@ -214,35 +216,34 @@ function _txTimelineHTML(list, dateStr, withMemo){
 }
 
 function _txOpenWindow(titleText, dateStr, rows, note){
-  var w=window.open('','_blank','width=520,height=900');
-  w.document.write('<html><head><meta charset="UTF-8"><title>'+titleText+'</title>'
+  var w=window.open('','_blank','width=540,height=900');
+  w.document.write(''
+    +'<html><head><meta charset="UTF-8"><title>'+titleText+'</title>'
     +'<style>'
-    +'body{font-family:sans-serif;padding:24px;max-width:460px;margin:0 auto;background:white}'
-    +'@media print{.no-print{display:none}body{padding:16px}}'
-    +'.save-btns{display:flex;gap:8px;justify-content:center;margin-bottom:18px}'
-    +'.btn-print{padding:9px 20px;background:#2D5016;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:sans-serif}'
-    +'.btn-pdf{padding:9px 20px;background:#1565C0;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:sans-serif}'
+    +'*{box-sizing:border-box}'
+    +'body{font-family:"Noto Sans KR",sans-serif;padding:20px;max-width:480px;margin:0 auto;background:white;color:#1a1a1a}'
+    +'.top-btns{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}'
+    +'.btn-print{flex:1;padding:10px;background:#555;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer}'
+    +'.btn-pdf{flex:2;padding:10px;background:#1565C0;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600}'
+    +'@media print{.top-btns{display:none}}'
     +'</style></head><body>'
-    +'<div class="no-print save-btns">'
+    +'<div class="top-btns no-print">'
     +'<button class="btn-print" onclick="window.print()">🖨️ 인쇄</button>'
-    +'<button class="btn-pdf" onclick="savePDF()">💾 PDF 파일 저장</button>'
+    +'<button class="btn-pdf" onclick="window.print()">💾 PDF 저장 (인쇄→PDF 선택)</button>'
     +'</div>'
-    +'<div style="text-align:center;margin-bottom:22px">'
-    +'<div style="font-size:28px">🍁</div>'
-    +'<h2 style="font-size:17px;margin:6px 0;color:#2D5016;font-family:serif">'+titleText+'</h2>'
+    +'<div style="text-align:center;margin-bottom:20px">'
+    +'<div style="font-size:26px">🍁</div>'
+    +'<h2 style="font-size:16px;margin:5px 0;color:#2D5016">'+titleText+'</h2>'
     +(dateStr?'<div style="display:inline-block;background:#1565C0;color:white;font-size:13px;font-weight:700;padding:4px 14px;border-radius:20px;margin:4px 0">'+dateStr+'</div><br>':'')
-    +'<span style="font-size:11px;color:#aaa">슬기로운 캐나다 생활</span></div>'
-    +'<div id="txContent">'+rows+'</div>'
-    +'<div style="margin-top:20px;padding-top:14px;border-top:1px solid #eee;text-align:center;font-size:10px;color:#bbb">'+note+'</div>'
-    +'<script>'
-    +'function savePDF(){'
-    +'  var opt={margin:10,filename:"밴프_여행_일정표.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}};'
-    +'  var el=document.getElementById("txContent");'
-    +'  if(window.html2pdf){html2pdf().set(opt).from(document.body).save();}'
-    +'  else{window.print();}' // fallback
-    +'}'
-    +'<\/script>'
-    +'</body></html>');
+    +'<span style="font-size:11px;color:#aaa">슬기로운 캐나다 생활</span>'
+    +'</div>'
+    +'<div>'+rows+'</div>'
+    +'<div style="margin-top:16px;padding-top:12px;border-top:1px solid #eee;text-align:center;font-size:10px;color:#bbb">'+note+'</div>'
+    +'<div style="margin-top:10px;text-align:center;font-size:11px;color:#999;background:#f5f5f5;padding:8px;border-radius:6px">'
+    +'💡 PDF 저장: 위 버튼 클릭 → 대상에서 <b>PDF로 저장</b> 선택'
+    +'</div>'
+    +'</body></html>'
+  );
   w.document.close();
 }
 
@@ -261,15 +262,16 @@ function txPlanImg(){
 function txPlanCSV(){
   var date=(document.getElementById('txPD')||{}).value||'';
   var BOM='\uFEFF';
-  var H=['순서','날짜','시간','지도번호','명소','소요시간','입장료','주차','메모'];
-  var rows=txMyList.map(function(s,i){
+  var H=['\ub0a0\uc9dc','\uc2dc\uac04','\uc9c0\ub3c4\ubc88\ud638','\uba85\uc18c','\uc18c\uc694\uc2dc\uac04','\uc785\uc7a5\ub8cc','\uc8fc\ucc28','\uba54\ubaa8'];
+  var rows=txMyList.map(function(s){
     var time=((document.getElementById('txPT'+s.num)||{}).value)||'';
-    var memo=(((document.getElementById('txPM'+s.num)||{}).value)||'').replace(/,/g,'，').replace(/\n/g,' ');
-    return [i+1,date,time,s.num,'"'+s.title+'"','"'+s.info[2][1]+'"','"'+s.info[0][1]+'"','"'+s.info[1][1]+'"','"'+memo+'"'].join(',');
+    var memo=(((document.getElementById('txPM'+s.num)||{}).value)||'').replace(/,/g,'\uff0c').replace(/\n/g,' ');
+    return [date,time,s.num,'"'+s.title+'"','"'+s.info[2][1]+'"','"'+s.info[0][1]+'"','"'+s.info[1][1]+'"','"'+memo+'"'].join(',');
   });
+  var csvContent = BOM + H.join(',') + '\r\n' + rows.join('\r\n');
   var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([BOM+H.join(',')+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'}));
-  a.download=txData.regionName+'_여행_일정표.csv';
+  a.href=URL.createObjectURL(new Blob([csvContent],{type:'text/csv;charset=utf-8'}));
+  a.download=txData.regionName+'_\uc5ec\ud589_\uc77c\uc815\ud45c.csv';
   a.click();
 }
 

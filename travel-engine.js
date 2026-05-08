@@ -216,34 +216,36 @@ function _txTimelineHTML(list, dateStr, withMemo){
 }
 
 function _txOpenWindow(titleText, dateStr, rows, note){
-  var w=window.open('','_blank','width=540,height=900');
-  w.document.write(''
-    +'<html><head><meta charset="UTF-8"><title>'+titleText+'</title>'
+  var content = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+titleText+'</title>'
     +'<style>'
-    +'*{box-sizing:border-box}'
-    +'body{font-family:"Noto Sans KR",sans-serif;padding:20px;max-width:480px;margin:0 auto;background:white;color:#1a1a1a}'
-    +'.top-btns{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}'
-    +'.btn-print{flex:1;padding:10px;background:#555;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer}'
-    +'.btn-pdf{flex:2;padding:10px;background:#1565C0;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600}'
-    +'@media print{.top-btns{display:none}}'
+    +'*{box-sizing:border-box;margin:0;padding:0}'
+    +'body{font-family:sans-serif;background:white;color:#1a1a1a;padding:20px;max-width:480px;margin:0 auto}'
+    +'.btns{display:flex;gap:8px;margin-bottom:18px}'
+    +'.btn{padding:10px 0;border:none;border-radius:8px;font-size:13px;cursor:pointer;flex:1;font-weight:600}'
+    +'.btn-p{background:#555;color:white}'
+    +'.btn-s{background:#1565C0;color:white}'
+    +'@media print{.btns{display:none}}'
     +'</style></head><body>'
-    +'<div class="top-btns no-print">'
-    +'<button class="btn-print" onclick="window.print()">🖨️ 인쇄</button>'
-    +'<button class="btn-pdf" onclick="window.print()">💾 PDF 저장 (인쇄→PDF 선택)</button>'
+    +'<div class="btns">'
+    +'<button class="btn btn-p" onclick="window.print()">🖨️ 인쇄</button>'
+    +'<button class="btn btn-s" onclick="doPDF()">💾 PDF 저장</button>'
     +'</div>'
-    +'<div style="text-align:center;margin-bottom:20px">'
+    +'<div style="text-align:center;margin-bottom:18px">'
     +'<div style="font-size:26px">🍁</div>'
     +'<h2 style="font-size:16px;margin:5px 0;color:#2D5016">'+titleText+'</h2>'
-    +(dateStr?'<div style="display:inline-block;background:#1565C0;color:white;font-size:13px;font-weight:700;padding:4px 14px;border-radius:20px;margin:4px 0">'+dateStr+'</div><br>':'')
+    +(dateStr ? '<div style="display:inline-block;background:#1565C0;color:white;font-size:13px;font-weight:700;padding:3px 14px;border-radius:20px;margin:4px 0">'+dateStr+'</div><br>' : '')
     +'<span style="font-size:11px;color:#aaa">슬기로운 캐나다 생활</span>'
     +'</div>'
     +'<div>'+rows+'</div>'
-    +'<div style="margin-top:16px;padding-top:12px;border-top:1px solid #eee;text-align:center;font-size:10px;color:#bbb">'+note+'</div>'
-    +'<div style="margin-top:10px;text-align:center;font-size:11px;color:#999;background:#f5f5f5;padding:8px;border-radius:6px">'
-    +'💡 PDF 저장: 위 버튼 클릭 → 대상에서 <b>PDF로 저장</b> 선택'
+    +'<div style="margin-top:14px;padding-top:10px;border-top:1px solid #eee;text-align:center;font-size:10px;color:#bbb">'+note+'</div>'
+    +'<div style="margin-top:8px;background:#f5f5f5;padding:8px 10px;border-radius:6px;text-align:center;font-size:11px;color:#777">'
+    +'💡 PDF 저장 버튼 클릭 후 → 대상을 <b>PDF로 저장</b> 선택'
     +'</div>'
-    +'</body></html>'
-  );
+    +'<script>function doPDF(){window.print();}<\/script>'
+    +'</body></html>';
+  var w = window.open('','_blank','width=540,height=880');
+  w.document.open();
+  w.document.write(content);
   w.document.close();
 }
 
@@ -262,7 +264,7 @@ function txPlanImg(){
 function txPlanCSV(){
   var date=(document.getElementById('txPD')||{}).value||'';
   var BOM='\uFEFF';
-  var H=['\ub0a0\uc9dc','\uc2dc\uac04','\uc9c0\ub3c4\ubc88\ud638','\uba85\uc18c','\uc18c\uc694\uc2dc\uac04','\uc785\uc7a5\ub8cc','\uc8fc\ucc28','\uba54\ubaa8'];
+  var H=['날짜','시간','지도번호','명소','소요시간','입장료','주차','메모'];
   var rows=txMyList.map(function(s){
     var time=((document.getElementById('txPT'+s.num)||{}).value)||'';
     var memo=(((document.getElementById('txPM'+s.num)||{}).value)||'').replace(/,/g,'\uff0c').replace(/\n/g,' ');
